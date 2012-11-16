@@ -1,4 +1,3 @@
-offline-installer-script
-========================
+Ubuntu offline installer script
 
-Bash script .isi offline installer
+(c) 2012 wagungs@gmail.com
