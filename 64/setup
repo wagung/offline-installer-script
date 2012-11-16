@@ -1,0 +1,53 @@
+#!/bin/bash
+#zenity bash shell script installer
+#linuk.web.id <wagungs@gmail.com>
+export DATA_DIR="`readlink -f "$0"`"
+HERE="`dirname "$DATA_DIR"`"
+
+cek()
+{
+dpkg-query -Wf'${Version}' ${1} 2>/dev/null | grep -q '^\d*'
+}
+
+gui-mode()
+{
+testRoot="`whoami`"
+if [ "${testRoot}" != "root" ]; then
+  gksudo ${0}
+  exit 0
+fi
+
+#validate ubuntu version and architecture
+OS="`lsb_release -s -c`"
+ARCH="`uname -m | sed 's/x86_//;s/i[3-6]86/32/'`"
+
+if [ "${OS}" != "quantal" ]; then
+zenity --error --text="Wrong Ubuntu Version \!"
+exit
+fi
+
+if [ "${ARCH}" != "64" ]; then
+zenity --error --text="Wrong CPU Architecture \!"
+exit
+fi
+
+#Zenity dialog installation
+zenity --question --title="Package Installation" \
+   --text="do you want to install this package"
+if [ $? -eq 0 ] ; then 
+echo | $HERE/xterm -e "sudo dpkg -EG -i quantal/*.deb; sleep 4"
+else
+  zenity --warning --text="Installation Canceled By user\!"
+fi
+}
+
+text-mode()
+{
+exec -a "$0" "$HERE/xterm" "-e" "./txt-install" "sleep 3"
+}
+
+if cek "zenity"; then
+   gui-mode
+else
+   text-mode
+fi

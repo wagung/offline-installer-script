@@ -1,0 +1,24 @@
+#!/bin/bash
+#bash shell script installer
+#linuk.web.id <wagungs@gmail.com>
+#validate ubuntu version and architecture
+OS="`lsb_release -s -c`"
+ARCH="`uname -m | sed 's/x86_//;s/i[3-6]86/32/'`"
+if [ "${OS}" != "quantal" ]; then
+echo -e "\e[1;31mWrong Ubuntu Version..!!!.\e[0m"
+sleep 3
+exit
+fi
+
+if [ "${ARCH}" != "64" ]; then
+echo -e "\e[1;31mWrong CPU Architecture..!!!.\e[0m"
+sleep 3
+exit
+fi
+
+#Dialog Confirm installation
+read -n1 -p "Do you want to install this package?? (y/n) "
+echo
+[[ $REPLY = [yY] ]] && sudo dpkg -EG -i quantal/*.deb; \
+echo -e "Installation Finished"; sleep 5; exit || \
+{ echo "You didn't answer yes, Installation canceled."; exit 1; }
